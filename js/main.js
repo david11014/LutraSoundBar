@@ -1,3 +1,5 @@
+var mute = false;
+
 const EItemClass = {
 	N: 0,
 	R: 1,
@@ -132,8 +134,6 @@ SVG("#MainSVG").click(
 $("#myaudio").on("ended", function () {
 	playState = EPlayState.PlayEnd;
 });
-
-var mute = true;
 
 async function DoDraw() {
 	if (playState == EPlayState.idle) {
