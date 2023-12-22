@@ -72,12 +72,15 @@ class AudioRenderer {
 		var audio = this.el.childNodes[1];
 		audio.src = String(props.value["url"]);
 		audio.id = + "Audio_" + String(props.value["name"]);
+		audio.classList.add("TryAudio")
 		this.el.childNodes[1].hidden = true;
 
 		this.el.childNodes[0].addEventListener("click",
 			function () {
-				audio.currentTime = 0
-				audio.play();
+				if (playState == EPlayState.idle) {
+					audio.currentTime = 0
+					audio.play();
+				}
 			});
 	}
 }

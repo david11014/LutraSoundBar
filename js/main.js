@@ -225,6 +225,11 @@ async function ResetPos() {
 
 // play the specific sound file in res folder
 function PlaySound(szFileName) {
+	for (var i = 0; i < $(".TryAudio").length; i++) {
+		$(".TryAudio")[i].pause();
+		$(".TryAudio")[i].currentTime = 0;
+	}
+
 	$("#audioSource")[0].src = szFileName;
 	$("#myaudio")[0].load(); //call this to just preload the audio without playing
 	$("#myaudio")[0].loop = false;
