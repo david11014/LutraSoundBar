@@ -49,6 +49,8 @@ class AudioRenderer {
 		const cont = document.createElement('div');
 		const bt = document.createElement('button');
 		bt.textContent = '▶';
+		bt.classList.add("btn");
+		bt.classList.add("btn-secondary");
 
 		const el = document.createElement('audio');
 		el.controls = 'controls';
@@ -68,7 +70,7 @@ class AudioRenderer {
 	render(props) {
 		var audio = this.el.childNodes[1];
 		audio.src = String(props.value["url"]);
-		audio.classList.add("TryAudio")
+		audio.classList.add("TryAudio");
 		this.el.childNodes[1].hidden = true;
 
 		this.el.childNodes[0].addEventListener("click",
