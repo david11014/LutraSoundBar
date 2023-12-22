@@ -150,8 +150,19 @@ async function DoDraw() {
 
 		var szText = ItemTableInstance.getData()[ItemIdx].ItemName;
 		var url = ItemTableInstance.getData()[ItemIdx].Audio.url;
-		var Duration = 1000;
 		$("#ResultText").text(szText);
+
+		switch (ItemTableInstance.getData()[ItemIdx].ItemClass) {
+			case 'UR':
+				Stream.setAttribute("fill", "url(#linearGradientRainbow)");
+				break;
+			case 'SR':
+				Stream.setAttribute("fill", "url(#linearGradientResultGold)");
+				break;
+			default:
+				Stream.setAttribute("fill","#fff");
+				break;
+		}
 
 		await Shake(1000, 2);
 		await PopCrop(800);

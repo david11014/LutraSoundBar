@@ -1,5 +1,5 @@
 <html>
-
+<title>Lutra Sound Bar</title>
 <head>
 	<!--jQuery: https://jquery.com/ -->
 	<script src="./js/jquery-3.7.1.min.js"></script>
@@ -26,7 +26,7 @@
 			<div class="col">
 				<svg class="center" id="MainSVG" width="544" height="800" version="1.1" viewport=""
 					viewBox="0 0 544 800" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
-					xmlns:xlink="http://www.w3.org/1999/xlink">
+					xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color:rgb(255, 255, 255);">
 					<defs>
 						<linearGradient id="linearGradient14579" x1="15.806" x2="63.569" y1="87.031" y2="87.031"
 							gradientUnits="userSpaceOnUse">
@@ -55,6 +55,21 @@
 						<linearGradient id="linearGradientResultBouble" x1="0%" y1="0%" x2="0%" y2="100%">
 							<stop offset="0%" stop-color="#8a8434FF" />
 							<stop offset="100%" stop-color="#8a843433" />
+						</linearGradient>
+						<linearGradient id="linearGradientResultGold" x1="0%" y1="0%" x2="100%" y2="0%">
+							<stop offset="0%" stop-color="#eada08ff" />
+							<stop offset="25%" stop-color="#f8f2aaff" />
+							<stop offset="50%" stop-color="#cfc438ff" />
+							<stop offset="75%" stop-color="#f8f2aaff" />
+							<stop offset="100%" stop-color="#eada08ff" />
+						</linearGradient>
+						<linearGradient id="linearGradientRainbow" x1="0" x2="0" y1="0" y2="1">
+							<stop offset="0" stop-color="#ff6767ff"/>
+							<stop offset="0.333" stop-color="#ffff65ff"/>
+							<stop offset="0.5" stop-color="#66ff6fff"/>
+							<stop offset="0.666" stop-color="#66ffffff"/>
+							<stop offset="0.833" stop-color="#6666ffff"/>
+							<stop offset="1" stop-color="#ff66ffff"/>
 						</linearGradient>
 					</defs>
 					<image id="LutraOnlyBody" x=".15092" y="9.153e-7" width="543.85" height="799.75"
@@ -97,7 +112,7 @@
 							</g>
 							<path id="Stream"
 								d="m-49.864 58.397-2.8047-0.0039-3.885-34.753s-0.05894-3.5437 1.2524-1.8124c1.3114 1.7313 1.6356-0.9582 2.7554-0.83243s1.1198 1.8891 2.2986 1.9247c1.1788 0.03557 0.98722-1.8128 1.9892-1.7605 1.002 0.05228 0.70727 2.0356 1.4735 2.0197 0.7662-0.01587 1.5029-1.7443 2.1365-1.6416 0.63359 0.10262 0.23576 2.0519 0.23576 2.0519l-2.3134 34.806z"
-								fill="#fff" fill-rule="evenodd" stroke="#000" stroke-width=".37949" />
+								fill="url(#linearGradientRainbow)" fill-rule="evenodd" stroke="#000" stroke-width=".37949" />
 						</g>
 						<g id="Bottle" transform="matrix(1.3009 0 0 1.3009 -13.71 .3543)" fill="#000d2a">
 							<g stroke="#000">
@@ -184,13 +199,17 @@
 				</svg>
 			</div>
 			<div class="col">
-				<p>稀有度機率</p>
+				<h1>稀有度機率設定</h1>
 				<div id="ProbabilityTable"></div>
-				<p>出貨品項</p>
-				<input id="AddItem_input" type="file" accept=".mp3,.wav,.ogg" style="display:none">
-				<input id="AddItem_bt" type="button" value="新增" />
-				<input id="RemoveItem_bt" type="button" value="刪除" />
-				<div id="ItemTable"></div>
+				<h1>抽選品項</h1>
+				<p>
+					<input id="AddItem_input" type="file" accept=".mp3,.wav,.ogg" style="display:none">
+					<input id="AddItem_bt" type="button" value="新增" />
+					<input id="RemoveItem_bt" type="button" value="刪除" />
+				</p>
+				<p>
+					<div id="ItemTable" style="max-height:300px"></div>
+				</p>
 			</div>
 		</div>
 	</div>
