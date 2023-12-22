@@ -68,7 +68,6 @@ class AudioRenderer {
 	render(props) {
 		var audio = this.el.childNodes[1];
 		audio.src = String(props.value["url"]);
-		audio.id = + "Audio_" + String(props.value["name"]);
 		audio.classList.add("TryAudio")
 		this.el.childNodes[1].hidden = true;
 

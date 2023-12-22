@@ -45,6 +45,10 @@ $("#AddItem_bt").on("click", function () {
 	return chooseFile();
 });
 
+$("#AddItem_input").on("click", function () {
+	this.value=""
+});
+
 $("#AddItem_input").change(function () {
 	if (this.files.length <= 0) {
 		return
