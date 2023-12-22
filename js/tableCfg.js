@@ -8,7 +8,6 @@ ProbabilityTableInstance = new Grid({
 			name: 'UR_probability',
 			editor: 'text',
 			onAfterChange(ev) {
-				console.log("UR_probability");
 				CalNClassProbability();
 			},
 		},
@@ -17,7 +16,6 @@ ProbabilityTableInstance = new Grid({
 			name: 'SR_probability',
 			editor: 'text',
 			onAfterChange(ev) {
-				console.log("SR_probability");
 				CalNClassProbability();
 			},
 		},
@@ -26,7 +24,6 @@ ProbabilityTableInstance = new Grid({
 			name: 'R_probability',
 			editor: 'text',
 			onAfterChange(ev) {
-				console.log("R_probability");
 				CalNClassProbability();
 			},
 		},

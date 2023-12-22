@@ -33,7 +33,6 @@ function CalNClassProbability() {
 	var fN_probability = 100.0 - (fUR_probability + fSR_probability + fR_probability);
 
 	if (fR_probability < 0) {
-		console.log("5");
 		ProbabilityTableInstance.setValue(0, "N_probability", "N/A");
 		return;
 	}
@@ -51,7 +50,6 @@ $("#AddItem_input").change(function () {
 		return
 	}
 
-	console.log(this.files[0]);
 	var url = URL.createObjectURL(this.files[0]);
 	var szFileName = this.files[0].name
 
