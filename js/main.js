@@ -95,6 +95,15 @@ function RemoveChecked() {
 	ItemTableInstance.resetData(NewData);
 }
 
+const EPlayState = {
+	idle: 'idle',
+	Playing: 'Playing',
+	PlayEnd: 'PlayEnd',
+	Reseting: 'Reseting',
+};
+
+var playState = EPlayState.idle;
+
 $("#MainSVG").ready(
 	function () {
 		var SVGHeigh = $("#MainSVG").height();
@@ -117,17 +126,9 @@ $("#MainSVG").ready(
 
 	});
 
-const EPlayState = {
-	idle: 'idle',
-	Playing: 'Playing',
-	PlayEnd: 'PlayEnd',
-};
-
-var playState = EPlayState.idle;
-
 SVG("#MainSVG").click(
-	async function () {
-		await DoDraw();
+	function () {
+		DoDraw();
 	}
 );
 
@@ -168,6 +169,7 @@ async function DoDraw() {
 		}
 	}
 	else if (playState == EPlayState.PlayEnd) {
+		playState = EPlayState.Reseting;
 		await FadeOut(1000);
 		await ResetPos();
 		playState = EPlayState.idle;
