@@ -50,14 +50,12 @@ $("#AddItem_input").on("click", function () {
 });
 
 $("#AddItem_input").change(function () {
-	if (this.files.length <= 0) {
-		return
+	for (var i = 0; i < this.files.length; i++){
+		var url = URL.createObjectURL(this.files[i]);
+		var szFileName = this.files[i].name
+
+		AddItem(url, szFileName);
 	}
-
-	var url = URL.createObjectURL(this.files[0]);
-	var szFileName = this.files[0].name
-
-	AddItem(url, szFileName);
 });
 
 function chooseFile() {
