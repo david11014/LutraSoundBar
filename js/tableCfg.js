@@ -1,5 +1,6 @@
 const Grid = tui.Grid;
 
+// Probability Table define
 ProbabilityTableInstance = new Grid({
 	el: document.getElementById('ProbabilityTable'), // Container element
 	columns: [
@@ -44,22 +45,23 @@ ProbabilityTableInstance = new Grid({
 
 Grid.applyTheme('striped'); // Call API of static method
 
+// Audio try play render
 class AudioRenderer {
 	constructor(props) {
-		const cont = document.createElement('div');
-		const bt = document.createElement('button');
-		bt.textContent = '▶';
-		bt.classList.add("btn");
-		bt.classList.add("btn-secondary");
+		const contDiv = document.createElement('div');
+		const btElm = document.createElement('button');
+		btElm.textContent = '▶';
+		btElm.classList.add("btn");
+		btElm.classList.add("btn-secondary");
 
-		const el = document.createElement('audio');
-		el.controls = 'controls';
-		el.loop = false;
+		const audioElm = document.createElement('audio');
+		audioElm.controls = 'controls';
+		audioElm.loop = false;
 
-		cont.appendChild(bt);
-		cont.appendChild(el);
+		contDiv.appendChild(btElm);
+		contDiv.appendChild(audioElm);
 
-		this.el = cont;
+		this.el = contDiv;
 		this.render(props);
 	}
 
@@ -68,21 +70,23 @@ class AudioRenderer {
 	}
 
 	render(props) {
-		var audio = this.el.childNodes[1];
-		audio.src = String(props.value["url"]);
-		audio.classList.add("TryAudio");
+		var audioElm = this.el.childNodes[1];
+		audioElm.src = String(props.value["url"]);
+		audioElm.classList.add("TryAudio");
 		this.el.childNodes[1].hidden = true;
 
+		// chick button trigger play sound
 		this.el.childNodes[0].addEventListener("click",
 			function () {
 				if (playState == EPlayState.idle) {
-					audio.currentTime = 0
-					audio.play();
+					audioElm.currentTime = 0
+					audioElm.play();
 				}
 			});
 	}
 }
 
+// Item Table define
 ItemTableInstance = new Grid({
 	el: document.getElementById('ItemTable'), // Container element
 	rowHeaders: ['checkbox'],
@@ -97,6 +101,7 @@ ItemTableInstance = new Grid({
 			header: '稀有度',
 			name: 'ItemClass',
 			width: 100,
+			align: 'center ',
 			editor: {
 				type: 'select',
 				options: {
@@ -112,7 +117,8 @@ ItemTableInstance = new Grid({
 		{
 			header: '試聽',
 			name: 'Audio',
-			width: 100,
+			width: 60,
+			align: 'center ',
 			renderer: {
 				type: AudioRenderer
 			}

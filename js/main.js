@@ -1,5 +1,6 @@
 var mute = false;
 
+// Item probability class
 const EItemClass = {
 	N: 0,
 	R: 1,
@@ -15,6 +16,32 @@ function isNumeric(str) {
 	return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
 		!isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
+
+// Delay specific time
+function delay(ms) {
+	return new Promise(function (resolve) {
+		setTimeout(resolve, ms);
+	});
+}
+
+// ==== Table bereaver ====
+
+$("#AddItem_bt").on("click", chooseFile);
+
+$("#RemoveItem_bt").on("click", RemoveChecked);
+
+$("#AddItem_input").on("click", function () {
+	this.value=""
+});
+
+$("#AddItem_input").change(function () {
+	for (var i = 0; i < this.files.length; i++){
+		var url = URL.createObjectURL(this.files[i]);
+		var szFileName = this.files[i].name
+
+		AddItem(url, szFileName);
+	}
+});
 
 // Calculate probability of N class
 function CalNClassProbability() {
@@ -41,28 +68,13 @@ function CalNClassProbability() {
 	return;
 }
 
-$("#AddItem_bt").on("click", function () {
-	return chooseFile();
-});
-
-$("#AddItem_input").on("click", function () {
-	this.value=""
-});
-
-$("#AddItem_input").change(function () {
-	for (var i = 0; i < this.files.length; i++){
-		var url = URL.createObjectURL(this.files[i]);
-		var szFileName = this.files[i].name
-
-		AddItem(url, szFileName);
-	}
-});
-
+// Choose file call back
 function chooseFile() {
 	$("#AddItem_input").click();
 	return false;
 }
 
+// Add item by file url and name
 function AddItem(url, szFileName) {
 	ItemTableInstance.appendRow({
 		ItemName: szFileName.replace(/^.*[\\/]/, ''),
@@ -76,10 +88,7 @@ function AddItem(url, szFileName) {
 	ItemTableInstance.refreshLayout();
 }
 
-$("#RemoveItem_bt").on("click", function () {
-	return RemoveChecked();
-});
-
+// remove checked item
 function RemoveChecked() {
 	var CurrentData = ItemTableInstance.getData();
 	var NewData = [];
@@ -94,6 +103,8 @@ function RemoveChecked() {
 
 	ItemTableInstance.resetData(NewData);
 }
+
+// ==== SVG bereaver ====
 
 const EPlayState = {
 	idle: 'idle',
@@ -136,6 +147,7 @@ $("#myaudio").on("ended", function () {
 	playState = EPlayState.PlayEnd;
 });
 
+// Do draw operation
 async function DoDraw() {
 	if (playState == EPlayState.idle) {
 		playState = EPlayState.Playing;
@@ -152,6 +164,7 @@ async function DoDraw() {
 		var url = ItemTableInstance.getData()[ItemIdx].Audio.url;
 		$("#ResultText").text(szText);
 
+		// set pop out stream color
 		switch (ItemTableInstance.getData()[ItemIdx].ItemClass) {
 			case 'UR':
 				Stream.setAttribute("fill", "url(#linearGradientRainbow)");
@@ -182,9 +195,54 @@ async function DoDraw() {
 	else if (playState == EPlayState.PlayEnd) {
 		playState = EPlayState.Reseting;
 		await FadeOut(1000);
-		await ResetPos();
 		playState = EPlayState.idle;
 	}
+}
+
+// Draw one item
+function DrawItem() {
+	var ItemTableData = ItemTableInstance.getData();
+	var ProbabilityTableData = ProbabilityTableInstance.getData();
+
+	if (ItemTableData.length <= 0) {
+		return -1;
+	}
+
+	// count the number of item in each class
+	var ClassCountTable = {
+		"N": 0,
+		"R": 0,
+		"SR": 0,
+		"UR": 0
+	};
+	for (var i = 0; i < ItemTableData.length; i++) {
+		ClassCountTable[ItemTableData[i].ItemClass]++;
+	}
+
+	// calculate integral table
+	var ClassIntegralTable = {};
+	ClassIntegralTable["N"] = ClassCountTable["N"] == 0 ? 0 : parseFloat(ProbabilityTableData[0].N_probability) * 100.0 / ClassCountTable["N"];
+	ClassIntegralTable["R"] = ClassCountTable["R"] == 0 ? 0 : parseFloat(ProbabilityTableData[0].R_probability) * 100.0 / ClassCountTable["R"];
+	ClassIntegralTable["SR"] = ClassCountTable["SR"] == 0 ? 0 : parseFloat(ProbabilityTableData[0].SR_probability) * 100.0 / ClassCountTable["SR"];
+	ClassIntegralTable["UR"] = ClassCountTable["UR"] == 0 ? 0 : parseFloat(ProbabilityTableData[0].UR_probability) * 100.0 / ClassCountTable["UR"];
+
+	var TotalIntegral = 0;
+	var ItemIntegral = [];
+	for (var i = 0; i < ItemTableData.length; i++) {
+		TotalIntegral += ClassIntegralTable[ItemTableData[i].ItemClass];
+		ItemIntegral.push(ClassIntegralTable[ItemTableData[i].ItemClass]);
+	}
+
+	var nRandVal = Math.floor(Math.random() * TotalIntegral);
+	var nCurrentAcc = 0
+	for (var i = 0; i < ItemTableData.length; i++) {
+		if (nCurrentAcc <= nRandVal && nRandVal < nCurrentAcc + ItemIntegral[i]) {
+			return i;
+		}
+		nCurrentAcc += ItemIntegral[i];
+	}
+
+	return Math.floor(Math.random() * ItemTableData.length);
 }
 
 // shake bottle
@@ -205,6 +263,7 @@ async function PopCrop(Duration) {
 	await delay(Duration);
 }
 
+// Let drink fall down
 async function DrinkDown(Duration) {
 	var SVGHeigh = $("#MainSVG").height();
 	SVG("#Drink").attr({ opacity: 1 });
@@ -212,6 +271,7 @@ async function DrinkDown(Duration) {
 	await delay(Duration);
 }
 
+// Show the bouble
 async function ShowBGBouble(Duration) {
 	SVG("#Bouble").animate({ duration: Duration }).attr({ opacity: 1 });
 	SVG('#LutrarmyCork').animate({ duration: Duration }).dmove(0, 45);
@@ -219,19 +279,21 @@ async function ShowBGBouble(Duration) {
 	await delay(Duration);
 }
 
+// Show draw result
 async function ShowResult(Duration) {
 	SVG("#Result").animate({ duration: Duration }).ease("<").attr({ opacity: 1 });
 	await delay(Duration);
 }
 
+// Fade out result object
 async function FadeOut(Duration) {
+	// fade out object
 	SVG("#Drink").animate({ duration: Duration }).attr({ opacity: 0 });
 	SVG("#Bouble").animate({ duration: Duration }).attr({ opacity: 0 });
 	SVG("#Result").animate({ duration: Duration }).attr({ opacity: 0 });
 	await delay(Duration);
-}
 
-async function ResetPos() {
+	// reset drink position
 	var SVGHeigh = $("#MainSVG").height();
 	SVG("#Drink").dmove(0, -SVGHeigh);
 }
@@ -247,55 +309,4 @@ function PlaySound(szFileName) {
 	$("#myaudio")[0].load(); //call this to just preload the audio without playing
 	$("#myaudio")[0].loop = false;
 	$("#myaudio")[0].play(); //call this to play the song right away
-}
-
-function delay(ms) {
-	return new Promise(function (resolve) {
-		setTimeout(resolve, ms);
-	});
-}
-
-// Draw one item
-function DrawItem() {
-	var ItemTableData = ItemTableInstance.getData();
-	var ProbabilityTableData = ProbabilityTableInstance.getData();
-
-	if (ItemTableData.length <= 0) {
-		return -1;
-	}
-
-	// update class count
-	var ClassCountTable = {};
-	ClassCountTable["N"] = 0;
-	ClassCountTable["R"] = 0;
-	ClassCountTable["SR"] = 0;
-	ClassCountTable["UR"] = 0;
-	for (var i = 0; i < ItemTableData.length; i++) {
-		ClassCountTable[ItemTableData[i].ItemClass]++;
-	}
-
-	// calculate accumulate Probability table
-	var ClassProbabilityTable = {};
-	ClassProbabilityTable["N"] = ProbabilityTableData[0].N_probability * 100.0 / ClassCountTable["N"];
-	ClassProbabilityTable["R"] = parseFloat(ProbabilityTableData[0].R_probability) * 100.0 / ClassCountTable["R"];
-	ClassProbabilityTable["SR"] = parseFloat(ProbabilityTableData[0].SR_probability) * 100.0 / ClassCountTable["SR"];
-	ClassProbabilityTable["UR"] = parseFloat(ProbabilityTableData[0].UR_probability) * 100.0 / ClassCountTable["UR"];
-
-	var nMAXVal = 0;
-	var ItemProbability = [];
-	for (var i = 0; i < ItemTableData.length; i++) {
-		nMAXVal += ClassProbabilityTable[ItemTableData[i].ItemClass];
-		ItemProbability.push(ClassProbabilityTable[ItemTableData[i].ItemClass]);
-	}
-
-	var nRandVal = Math.floor(Math.random() * nMAXVal);
-	var nCurrentAcc = 0
-	for (var i = 0; i < ItemTableData.length; i++) {
-		if (nCurrentAcc <= nRandVal && nRandVal < nCurrentAcc + ItemProbability[i]) {
-			return i;
-		}
-		nCurrentAcc += ItemProbability[i];
-	}
-
-	return Math.floor(Math.random() * ItemTableData.length);
 }
